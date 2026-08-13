@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
-import { AreaChart, Area, ResponsiveContainer, RadialBarChart, RadialBar } from 'recharts';
+import { AreaChart, Area, Line, ResponsiveContainer, RadialBarChart, RadialBar, Tooltip } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '../store/useStore';
 import { getDailyProgress } from '../lib/stats';
-import { parseISO, format, subDays } from 'date-fns';
+import { parseISO, format, subDays, isSameDay } from 'date-fns';
 import { useEffect, useState } from 'react';
 
 const quotes = [
@@ -22,7 +22,18 @@ export function Hero() {
   const areaData = Array.from({ length: 30 }).map((_, i) => {
     const d = subDays(date, 29 - i);
     const p = getDailyProgress(d, habits, entries);
-    return { name: format(d, 'MMM dd'), value: p.percentage };
+    
+    // Calculate average mood for the day (mapped to 0-100 scale for the chart)
+    const dayEntries = entries.filter(e => isSameDay(parseISO(e.date), d) && e.mood);
+    const avgMood = dayEntries.length > 0 
+      ? dayEntries.reduce((acc, e) => acc + (e.mood || 0), 0) / dayEntries.length 
+      : null;
+      
+    return { 
+      name: format(d, 'MMM dd'), 
+      completion: p.percentage,
+      mood: avgMood ? (avgMood / 5) * 100 : null
+    };
   });
 
   const [quoteIndex, setQuoteIndex] = useState(0);
@@ -42,24 +53,44 @@ export function Hero() {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <Card className="md:col-span-1 overflow-hidden relative">
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg">Monthly Consistency</CardTitle>
+          <CardTitle className="text-lg">Consistency vs Mood</CardTitle>
         </CardHeader>
         <CardContent className="h-[140px] p-0 mt-4">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={areaData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+            <AreaChart data={areaData} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#7C3AED" stopOpacity={0.8}/>
                   <stop offset="95%" stopColor="#7C3AED" stopOpacity={0}/>
                 </linearGradient>
               </defs>
+              <Tooltip 
+                contentStyle={{ backgroundColor: '#1C1A2B', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '8px' }}
+                itemStyle={{ color: '#fff' }}
+                labelStyle={{ color: '#a1a1aa' }}
+                formatter={(value: number, name: string) => {
+                  if (name === 'mood') return [(value / 100 * 5).toFixed(1) + ' / 5', 'Avg Mood'];
+                  return [value + '%', 'Completion'];
+                }}
+              />
               <Area 
                 type="monotone" 
-                dataKey="value" 
+                dataKey="completion" 
                 stroke="#A78BFA" 
                 strokeWidth={3}
                 fillOpacity={1} 
                 fill="url(#colorValue)" 
+                animationDuration={1500}
+                animationEasing="ease-out"
+              />
+              <Line 
+                type="monotone" 
+                dataKey="mood" 
+                stroke="#FBBF24" 
+                strokeWidth={2}
+                strokeDasharray="4 4"
+                dot={{ r: 2, fill: '#FBBF24' }}
+                connectNulls
                 animationDuration={1500}
                 animationEasing="ease-out"
               />
