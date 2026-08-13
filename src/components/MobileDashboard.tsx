@@ -9,8 +9,9 @@ import { WeeklyBreakdown } from './WeeklyBreakdown';
 import { Leaderboard } from './Leaderboard';
 import { Heatmap } from './Heatmap';
 import { getHabitStreak } from '../lib/stats';
+import { AddHabitDialog } from './AddHabitDialog';
 import { ViewMode } from '../types';
-import { Calendar, LayoutGrid, CalendarDays } from 'lucide-react';
+import { Calendar, LayoutGrid, CalendarDays, Plus } from 'lucide-react';
 
 export function MobileDashboard() {
   const { habits, entries, selectedDate, toggleHabitEntry, viewMode, setViewMode } = useStore();
@@ -28,7 +29,11 @@ export function MobileDashboard() {
             <CardTitle className="text-xl">Today's Goals</CardTitle>
             <p className="text-sm text-muted-foreground font-mono mt-1">{format(date, 'EEEE, MMM d')}</p>
           </div>
-          <Target className="w-6 h-6 text-brand-light" />
+          <AddHabitDialog>
+            <button className="bg-brand/20 text-brand-light hover:bg-brand/30 transition-colors p-2 rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(124,58,237,0.2)]">
+              <Plus className="w-5 h-5" />
+            </button>
+          </AddHabitDialog>
         </CardHeader>
         <CardContent className="pt-4">
           <div className="flex flex-col gap-3">

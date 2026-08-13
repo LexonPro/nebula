@@ -1,13 +1,26 @@
 import { useStore } from '../store/useStore';
 import { Flame, Settings, Download, Moon, Sun, ChevronLeft, ChevronRight } from 'lucide-react';
 import { format, parseISO, addMonths, subMonths } from 'date-fns';
+import { toPng } from 'html-to-image';
 
 export function Header() {
-  const { theme, setTheme, selectedDate, setSelectedDate } = useStore();
+  const { theme, setTheme, selectedDate, setSelectedDate, entries } = useStore();
   const date = parseISO(selectedDate);
 
   const handlePrevMonth = () => setSelectedDate(format(subMonths(date, 1), 'yyyy-MM-dd'));
   const handleNextMonth = () => setSelectedDate(format(addMonths(date, 1), 'yyyy-MM-dd'));
+
+  const handleExport = async () => {
+    try {
+      const dataUrl = await toPng(document.body, { quality: 0.95, backgroundColor: theme === 'dark' ? '#0B0A10' : '#ffffff' });
+      const link = document.createElement('a');
+      link.download = `nebula-dashboard-${format(new Date(), 'yyyy-MM-dd')}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Failed to export image', err);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-background/80 backdrop-blur-xl">
@@ -36,7 +49,7 @@ export function Header() {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500/10 text-orange-500 border border-orange-500/20">
             <Flame className="w-4 h-4" />
-            <span className="font-mono font-bold text-sm">12</span>
+            <span className="font-mono font-bold text-sm">{entries.length}</span>
           </div>
 
           <button 
@@ -46,7 +59,7 @@ export function Header() {
             {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
           
-          <button className="p-2 rounded-full hover:bg-white/10 transition-colors hidden sm:block">
+          <button onClick={handleExport} className="p-2 rounded-full hover:bg-white/10 transition-colors hidden sm:block" title="Export as PNG">
             <Download className="w-5 h-5" />
           </button>
 

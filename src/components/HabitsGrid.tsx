@@ -4,6 +4,7 @@ import { format, subDays, isSameDay, parseISO, startOfWeek, endOfWeek, eachDayOf
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Plus, GripVertical } from 'lucide-react';
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { AddHabitDialog } from './AddHabitDialog';
 
 // Confetti effect placeholder - could use canvas-confetti in real app
 const ConfettiBurst = ({ active }: { active: boolean }) => {
@@ -55,9 +56,11 @@ export function HabitsGrid() {
     <Card className="flex-1 flex flex-col min-h-[400px]">
       <CardHeader className="flex flex-row items-center justify-between py-4 border-b border-white/5">
         <CardTitle>Daily Habits</CardTitle>
-        <button className="bg-brand/20 text-brand-light hover:bg-brand/30 transition-colors p-1.5 rounded-md flex items-center gap-1 text-sm font-medium">
-          <Plus className="w-4 h-4" /> Add Habit
-        </button>
+        <AddHabitDialog>
+          <button className="bg-brand/20 text-brand-light hover:bg-brand/30 transition-colors p-1.5 rounded-md flex items-center gap-1 text-sm font-medium">
+            <Plus className="w-4 h-4" /> Add Habit
+          </button>
+        </AddHabitDialog>
       </CardHeader>
       
       <CardContent className="p-0 overflow-x-auto select-none touch-none">
