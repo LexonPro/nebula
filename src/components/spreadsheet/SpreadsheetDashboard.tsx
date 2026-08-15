@@ -104,7 +104,7 @@ export function SpreadsheetDashboard() {
                   weeks.push({ weekNum: currentWeek, span, color: getWeekColor(daysInMonth[daysInMonth.length - 1]) });
 
                   return weeks.map((w, i) => (
-                    <div key={i} className={`flex items-center justify-center text-xs font-mono font-semibold uppercase tracking-wider ${w.color.bg} ${w.color.text} border-r border-b border-border`} style={{ width: `${(w.span / daysInMonth.length) * 100}%` }}>
+                    <div key={i} className={`flex items-center justify-center text-xs font-mono font-semibold uppercase tracking-wider ${w.color.bg} ${w.color.text} border-r border-b border-border shrink-0`} style={{ width: `${w.span * 40}px` }}>
                       Week {i + 1}
                     </div>
                   ));
@@ -116,7 +116,7 @@ export function SpreadsheetDashboard() {
                   const color = getWeekColor(d);
                   const isToday = isSameDay(d, new Date());
                   return (
-                    <div key={i} className={`flex-1 min-w-[24px] border-r border-border flex flex-col items-center justify-center ${color.bg}`}>
+                    <div key={i} className={`w-10 shrink-0 border-r border-border flex flex-col items-center justify-center ${color.bg}`}>
                       <span className="text-[9px] font-bold opacity-50">{format(d, 'EE').charAt(0)}</span>
                       <span className={`text-[11px] font-mono font-medium ${isToday ? 'bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center' : ''}`}>{format(d, 'd')}</span>
                     </div>
@@ -156,7 +156,7 @@ export function SpreadsheetDashboard() {
                     const isDisabled = isFuture || (strictMode && !isToday);
 
                     return (
-                      <div key={i} className={`flex-1 min-w-[24px] h-full border-r border-b border-border flex items-center justify-center p-1.5 transition-colors ${isCompleted ? color.bg : ''}`}>
+                      <div key={i} className={`w-10 shrink-0 h-full border-r border-b border-border flex items-center justify-center p-1.5 transition-colors ${isCompleted ? color.bg : ''}`}>
                         <button
                           onClick={() => !isDisabled && toggleHabitEntry(habit.id, dateStr)}
                           disabled={isDisabled}
@@ -194,9 +194,9 @@ export function SpreadsheetDashboard() {
                   <div className="w-2 h-2 rounded-full border border-border" />
                   <span className="flex-1 border-b border-dashed border-border/50 h-3" />
                 </div>
-                <div className="flex flex-1">
+                <div className="flex">
                   {daysInMonth.map((_, j) => (
-                    <div key={j} className="flex-1 min-w-[24px] h-full border-r border-b border-border p-1.5">
+                    <div key={j} className="w-10 shrink-0 h-full border-r border-b border-border p-1.5">
                       <div className="w-full h-full rounded-[4px] border border-dashed border-border/30"></div>
                     </div>
                   ))}
