@@ -109,22 +109,29 @@ export function TopAnalytics({ daysInMonth }: { daysInMonth: Date[] }) {
         <div className="flex justify-between w-full mt-2 px-[2%]">
           {dailyData.map((d, i) => (
             <div key={i} className="flex-1 text-center">
-              <span className="text-[9px] font-mono text-foreground font-bold">{d.completed}</span>
+              <span className="text-[9px] font-mono text-muted-foreground font-medium">{d.name}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Bottom Half: Weekly Donuts */}
-      <div className="flex justify-around items-end w-full px-8 mt-2">
+      <div className="flex justify-around items-center w-full mt-2 divide-x divide-border border-y border-border bg-card/20">
         {weeklyData.map(w => (
-           <div key={w.name} className="flex flex-col items-center gap-3">
+           <div key={w.name} className="flex flex-col items-center gap-3 flex-1 py-4">
               <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: w.color }}>
                 {w.name}
               </span>
               <div className="relative w-16 h-16">
                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                   <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="8" className="text-muted/20" />
+                   {/* Inner and Outer Borders */}
+                   <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="1" className="text-border" />
+                   <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" strokeWidth="1" className="text-border" />
+                   
+                   {/* Background Track */}
+                   <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="8" className="text-muted/10" />
+                   
+                   {/* Progress Ring */}
                    <circle cx="50" cy="50" r="40" fill="none" stroke={w.color} strokeWidth="8" strokeDasharray="251.2" strokeDashoffset={251.2 - (251.2 * w.percentage) / 100} strokeLinecap="round" className="transition-all duration-1000 ease-out" />
                  </svg>
                  <div className="absolute inset-0 flex items-center justify-center">
