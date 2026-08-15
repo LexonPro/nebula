@@ -31,7 +31,7 @@ export function RightSidebar({ daysInMonth }: { daysInMonth: Date[] }) {
   return (
     <div className="flex flex-col h-full bg-card">
       <div className="p-6 border-b border-border">
-        <h2 className="text-xs font-bold font-mono uppercase tracking-widest text-muted-foreground mb-4 text-center">Daily Progress</h2>
+        <h2 className="text-xs font-bold font-mono uppercase tracking-widest text-muted-foreground mb-4 text-center">Monthly Progress</h2>
         <div className="flex items-center justify-between bg-muted/20 p-4 rounded-2xl border border-border">
           <div className="flex flex-col items-center justify-center">
             <span className="text-3xl font-bold text-primary font-display">{overallProgress.toFixed(2)}%</span>
