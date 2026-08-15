@@ -68,7 +68,7 @@ export function Hero() {
                 contentStyle={{ backgroundColor: '#1C1A2B', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '8px' }}
                 itemStyle={{ color: '#fff' }}
                 labelStyle={{ color: '#a1a1aa' }}
-                formatter={(value: number, name: string) => {
+                formatter={(value: any, name: any) => {
                   if (name === 'mood') return [(value / 100 * 5).toFixed(1) + ' / 5', 'Avg Mood'];
                   return [value + '%', 'Completion'];
                 }}
