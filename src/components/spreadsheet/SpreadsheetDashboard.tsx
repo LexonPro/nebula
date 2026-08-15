@@ -15,7 +15,6 @@ export function SpreadsheetDashboard() {
   const daysCount = getDaysInMonth(date);
   const daysInMonth = Array.from({ length: daysCount }).map((_, i) => addDays(firstDay, i));
 
-  // Premium colors for weeks (using tailwind colors)
   const getWeekColor = (date: Date) => {
     const week = getWeekOfMonth(date);
     switch (week % 5) {
@@ -26,6 +25,16 @@ export function SpreadsheetDashboard() {
       case 0: return { bg: 'bg-rose-500/10 dark:bg-rose-500/20', text: 'text-rose-600 dark:text-rose-400', border: 'border-rose-500/20', activeBg: '#f43f5e' };
       default: return { bg: 'bg-slate-500/10', text: 'text-slate-500', border: 'border-slate-500/20', activeBg: '#64748b' };
     }
+  };
+
+  const getHabitProgress = (habitId: string) => {
+    const completed = entries.filter(e => {
+      if (!e.completed || e.habitId !== habitId) return false;
+      const d = parseISO(e.date);
+      return daysInMonth.some(monthDay => isSameDay(monthDay, d));
+    }).length;
+    const progress = daysInMonth.length === 0 ? 0 : (completed / daysInMonth.length) * 100;
+    return progress.toFixed(1);
   };
 
   return (
@@ -62,10 +71,13 @@ export function SpreadsheetDashboard() {
               <div className="w-56 md:w-64 shrink-0 bg-card border-r border-border flex flex-col">
                 <div className="flex-1"></div> {/* Spacer to align with weeks */}
                 <div className="h-10 px-4 flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-widest bg-muted border-t border-border">
-                  <span>Daily Habits</span>
-                  <AddHabitDialog>
-                    <button className="hover:text-primary transition-colors flex items-center gap-1"><Plus className="w-3 h-3" /> Add</button>
-                  </AddHabitDialog>
+                  <div className="flex items-center gap-3">
+                    <span>Daily Habits</span>
+                    <AddHabitDialog>
+                      <button className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1 bg-primary/10 px-1.5 py-0.5 rounded-sm"><Plus className="w-3 h-3" /> Add</button>
+                    </AddHabitDialog>
+                  </div>
+                  <span>Progress</span>
                 </div>
               </div>
 
@@ -121,11 +133,14 @@ export function SpreadsheetDashboard() {
             {/* Habit Rows */}
             {habits.map((habit, rowIndex) => (
               <div key={habit.id} className="flex group hover:bg-muted/50 transition-colors">
-                {/* Sticky Habit Name */}
-                <div className="sticky left-0 z-20 w-56 md:w-64 shrink-0 bg-card group-hover:bg-muted border-r border-b border-border px-4 py-2.5 flex items-center gap-3 transition-colors">
-                  <span className="text-[10px] font-mono text-muted-foreground w-4 text-right">{rowIndex + 1}</span>
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: habit.color }} />
-                  <span className="font-medium text-xs truncate flex-1 text-foreground">{habit.name}</span>
+                {/* Sticky Habit Name & Progress */}
+                <div className="sticky left-0 z-20 w-56 md:w-64 shrink-0 bg-card group-hover:bg-muted border-r border-b border-border px-4 py-2.5 flex items-center justify-between transition-colors">
+                  <div className="flex items-center gap-3 flex-1 overflow-hidden pr-2">
+                    <span className="text-[10px] font-mono text-muted-foreground w-4 text-right shrink-0">{rowIndex + 1}</span>
+                    <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: habit.color }} />
+                    <span className="font-medium text-xs truncate text-foreground">{habit.name}</span>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-muted-foreground shrink-0">{getHabitProgress(habit.id)}%</span>
                 </div>
 
                 {/* Checkboxes */}

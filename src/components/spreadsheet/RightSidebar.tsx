@@ -30,23 +30,41 @@ export function RightSidebar({ daysInMonth }: { daysInMonth: Date[] }) {
 
   return (
     <div className="flex flex-col h-full bg-card">
-      <div className="p-6 border-b border-border">
-        <h2 className="text-xs font-bold font-mono uppercase tracking-widest text-muted-foreground mb-4 text-center">Monthly Progress</h2>
-        <div className="flex items-center justify-between bg-muted/20 p-4 rounded-2xl border border-border">
+      
+      {/* Monthly Progress (Big Donut) */}
+      <div className="p-6 border-b border-border flex flex-col items-center justify-center py-10 bg-rose-500/5">
+        <h2 className="text-xs font-bold font-mono uppercase tracking-widest text-rose-500/80 mb-6 text-center">Monthly Progress</h2>
+        
+        <div className="flex items-center gap-8">
           <div className="flex flex-col items-center justify-center">
-            <span className="text-3xl font-bold text-primary font-display">{overallProgress.toFixed(2)}%</span>
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Progress</span>
+            <span className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Completed</span>
+            <span className="text-xl font-bold font-mono text-foreground">{completedThisMonth} <span className="text-muted-foreground">/ {totalPossible}</span></span>
           </div>
-          <div className="w-px h-12 bg-border"></div>
-          <div className="flex flex-col items-center justify-center">
-            <span className="text-xl font-bold text-foreground font-mono">{completedThisMonth} <span className="text-sm text-muted-foreground">/ {totalPossible}</span></span>
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Habits</span>
+
+          <div className="relative w-32 h-32">
+             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+               {/* Inner and Outer Borders */}
+               <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="1" className="text-border" />
+               <circle cx="50" cy="50" r="34" fill="none" stroke="currentColor" strokeWidth="1" className="text-border" />
+               
+               {/* Background Track */}
+               <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="12" className="text-muted/10" />
+               
+               {/* Progress Ring */}
+               <circle cx="50" cy="50" r="40" fill="none" stroke="#f43f5e" strokeWidth="12" strokeDasharray="251.2" strokeDashoffset={251.2 - (251.2 * overallProgress) / 100} strokeLinecap="round" className="transition-all duration-1000 ease-out" />
+             </svg>
+             <div className="absolute inset-0 flex flex-col items-center justify-center">
+               <span className="text-2xl font-bold font-display text-rose-500 tracking-tighter">
+                 {overallProgress.toFixed(1)}%
+               </span>
+             </div>
           </div>
         </div>
       </div>
 
-      <div className="p-6 border-b border-border">
-        <h2 className="text-xs font-bold font-mono uppercase tracking-widest text-muted-foreground mb-4 text-center">Top Habits</h2>
+      {/* Top 10 Habits */}
+      <div className="flex-1 p-6 overflow-y-auto custom-scrollbar">
+        <h2 className="text-xs font-bold font-mono uppercase tracking-widest text-muted-foreground mb-4 text-center">Top 10 Habits</h2>
         <div className="bg-muted/10 rounded-xl border border-border overflow-hidden">
           <div className="flex text-[9px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/30 px-3 py-2 border-b border-border">
              <div className="w-6">#</div>
@@ -68,32 +86,6 @@ export function RightSidebar({ daysInMonth }: { daysInMonth: Date[] }) {
         {habits.length > 0 && overallProgress === 100 && (
           <p className="text-[10px] text-center mt-4 italic text-primary/80 font-medium">Over 100% on 0 habits — keep going!</p>
         )}
-      </div>
-
-      <div className="flex-1 p-6 overflow-y-auto custom-scrollbar">
-        <h2 className="text-xs font-bold font-mono uppercase tracking-widest text-muted-foreground mb-4 text-center">Habit Progress</h2>
-        <div className="flex flex-col gap-4">
-          <div className="flex text-[9px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border pb-2 px-1">
-             <div className="w-12">Goal</div>
-             <div className="flex-1 text-center">Percentage</div>
-             <div className="w-16 text-right">Count</div>
-          </div>
-          {habitStats.map(h => (
-            <div key={h.id} className="flex items-center text-xs px-1 gap-2">
-              <div className="w-12 font-mono text-[10px] text-muted-foreground">{h.progress.toFixed(0)}%</div>
-              <div className="flex-1 h-4 bg-muted rounded-full overflow-hidden">
-                <div 
-                  className="h-full rounded-full transition-all duration-1000 ease-out"
-                  style={{ width: `${h.progress}%`, backgroundColor: h.color }}
-                />
-              </div>
-              <div className="w-16 text-right font-mono text-[10px]">
-                <span className="text-foreground">{h.completed}</span>
-                <span className="text-muted-foreground"> / {daysInMonth.length}</span>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );
