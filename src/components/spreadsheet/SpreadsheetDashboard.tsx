@@ -69,14 +69,15 @@ export function SpreadsheetDashboard() {
             <div className="flex bg-background border-b border-border">
               {/* Top-Left Corner for the Grid */}
               <div className="w-56 md:w-64 shrink-0 bg-card border-r border-border flex flex-col">
-                <div className="flex-1"></div> {/* Spacer to align with weeks */}
+                <div className="flex-1 flex flex-col justify-end p-4 pb-3">
+                  <AddHabitDialog>
+                    <button className="w-full text-primary hover:text-primary/90 transition-all flex items-center justify-center gap-2 bg-primary/10 hover:bg-primary/20 py-2 rounded-lg font-bold text-xs shadow-sm border border-primary/20">
+                      <Plus className="w-3.5 h-3.5" /> Add New Habit
+                    </button>
+                  </AddHabitDialog>
+                </div>
                 <div className="h-10 px-4 flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-widest bg-muted border-t border-border">
-                  <div className="flex items-center gap-3">
-                    <span>Daily Habits</span>
-                    <AddHabitDialog>
-                      <button className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1 bg-primary/10 px-1.5 py-0.5 rounded-sm"><Plus className="w-3 h-3" /> Add</button>
-                    </AddHabitDialog>
-                  </div>
+                  <span>Daily Habits</span>
                   <span>Progress</span>
                 </div>
               </div>
