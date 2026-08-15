@@ -40,11 +40,11 @@ export function SpreadsheetDashboard() {
   return (
     <div className="flex h-[calc(100vh-5.5rem)] bg-background overflow-hidden text-sm w-full max-w-[1920px] mx-auto">
       {/* Main Grid Area (Left + Middle combined for sync scrolling) */}
-      <div className="flex-1 overflow-x-auto overflow-y-hidden relative flex flex-col custom-scrollbar">
-        <div className="w-full min-w-max flex flex-col h-full">
+      <div className="flex-1 overflow-hidden relative flex flex-col custom-scrollbar">
+        <div className="w-full flex flex-col h-full">
 
           {/* FIXED TOP SECTION (Month, Quote, and Grid Headers) */}
-          <div className="z-40 flex flex-col bg-background shadow-md">
+          <div className="z-40 flex flex-col bg-background shadow-md overflow-hidden" style={{ scrollbarGutter: 'stable' }}>
             {/* Top Area (Month & Quote) */}
             <div className="flex bg-card">
               <div className="w-56 md:w-64 shrink-0 bg-card border-r border-b border-border p-6 flex flex-col justify-between">
@@ -104,7 +104,7 @@ export function SpreadsheetDashboard() {
                   weeks.push({ weekNum: currentWeek, span, color: getWeekColor(daysInMonth[daysInMonth.length - 1]) });
 
                   return weeks.map((w, i) => (
-                    <div key={i} className={`flex items-center justify-center text-xs font-mono font-semibold uppercase tracking-wider ${w.color.bg} ${w.color.text} border-r border-b border-border shrink-0`} style={{ width: `${w.span * 40}px` }}>
+                    <div key={i} className={`flex items-center justify-center text-xs font-mono font-semibold uppercase tracking-wider ${w.color.bg} ${w.color.text} border-r border-b border-border`} style={{ width: `${(w.span / daysInMonth.length) * 100}%` }}>
                       Week {i + 1}
                     </div>
                   ));
@@ -116,7 +116,7 @@ export function SpreadsheetDashboard() {
                   const color = getWeekColor(d);
                   const isToday = isSameDay(d, new Date());
                   return (
-                    <div key={i} className={`w-10 shrink-0 border-r border-border flex flex-col items-center justify-center ${color.bg}`}>
+                    <div key={i} className={`flex-1 min-w-[24px] border-r border-border flex flex-col items-center justify-center ${color.bg}`}>
                       <span className="text-[9px] font-bold opacity-50">{format(d, 'EE').charAt(0)}</span>
                       <span className={`text-[11px] font-mono font-medium ${isToday ? 'bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center' : ''}`}>{format(d, 'd')}</span>
                     </div>
@@ -128,7 +128,7 @@ export function SpreadsheetDashboard() {
           </div>
 
           {/* Grid Body */}
-          <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar bg-background">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar bg-background" style={{ scrollbarGutter: 'stable' }}>
             <div className="flex flex-col">
 
             {/* Habit Rows */}
@@ -156,14 +156,14 @@ export function SpreadsheetDashboard() {
                     const isDisabled = isFuture || (strictMode && !isToday);
 
                     return (
-                      <div key={i} className={`w-10 shrink-0 h-full border-r border-b border-border flex items-center justify-center p-1.5 transition-colors ${isCompleted ? color.bg : ''}`}>
+                      <div key={i} className={`flex-1 min-w-[24px] h-full border-r border-b border-border flex items-center justify-center p-1 transition-colors ${isCompleted ? color.bg : ''}`}>
                         <button
                           onClick={() => !isDisabled && toggleHabitEntry(habit.id, dateStr)}
                           disabled={isDisabled}
-                          className={`w-full h-full rounded-[4px] flex items-center justify-center transition-all ${isCompleted
-                              ? `bg-[${color.activeBg}] text-white shadow-sm ring-1 ring-[${color.activeBg}]/50`
-                              : 'bg-transparent border border-dashed border-border/60 hover:border-primary/50'
-                            } ${isDisabled ? 'opacity-30 cursor-not-allowed hover:border-border/60' : ''}`}
+                          className={`w-[18px] h-[18px] rounded-[4px] transition-all flex items-center justify-center ${isCompleted
+                              ? `border-transparent shadow-sm`
+                              : 'border-2 border-border/50 hover:border-primary/50 bg-background/50'
+                            } ${isDisabled ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer hover:scale-110'}`}
                           style={{ backgroundColor: isCompleted ? color.activeBg : undefined }}
                         >
                           <AnimatePresence>
@@ -174,7 +174,7 @@ export function SpreadsheetDashboard() {
                                 exit={{ scale: 0, opacity: 0 }}
                                 transition={{ type: "spring", stiffness: 500, damping: 30 }}
                               >
-                                <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
+                                <Check className="w-3 h-3 text-white stroke-[3]" />
                               </motion.div>
                             )}
                           </AnimatePresence>
@@ -194,10 +194,10 @@ export function SpreadsheetDashboard() {
                   <div className="w-2 h-2 rounded-full border border-border" />
                   <span className="flex-1 border-b border-dashed border-border/50 h-3" />
                 </div>
-                <div className="flex">
+                <div className="flex flex-1">
                   {daysInMonth.map((_, j) => (
-                    <div key={j} className="w-10 shrink-0 h-full border-r border-b border-border p-1.5">
-                      <div className="w-full h-full rounded-[4px] border border-dashed border-border/30"></div>
+                    <div key={j} className="flex-1 min-w-[24px] h-full border-r border-b border-border flex items-center justify-center p-1">
+                      <div className="w-[18px] h-[18px] rounded-[4px] border-2 border-dashed border-border/30"></div>
                     </div>
                   ))}
                 </div>
