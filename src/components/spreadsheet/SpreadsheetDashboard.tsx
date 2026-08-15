@@ -1,5 +1,5 @@
 import { useStore } from '../../store/useStore';
-import { format, getDaysInMonth, startOfMonth, addDays, getWeekOfMonth, isSameDay, parseISO } from 'date-fns';
+import { format, getDaysInMonth, startOfMonth, addDays, getWeekOfMonth, isSameDay, parseISO, isAfter, startOfDay } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Plus } from 'lucide-react';
 import { AddHabitDialog } from '../AddHabitDialog';
@@ -135,7 +135,8 @@ export function SpreadsheetDashboard() {
                     const entry = entries.find(e => e.habitId === habit.id && e.date === dateStr);
                     const isCompleted = entry?.completed || false;
                     const isToday = isSameDay(d, new Date());
-                    const isDisabled = strictMode && !isToday;
+                    const isFuture = isAfter(startOfDay(d), startOfDay(new Date()));
+                    const isDisabled = isFuture || (strictMode && !isToday);
 
                     return (
                       <div key={i} className={`flex-1 min-w-[24px] h-full border-r border-b border-border flex items-center justify-center p-1.5 transition-colors ${isCompleted ? color.bg : ''}`}>
@@ -168,8 +169,8 @@ export function SpreadsheetDashboard() {
               </div>
             ))}
 
-            {/* Ghost Rows to fill empty space */}
-            {Array.from({ length: Math.max(0, 12 - habits.length) }).map((_, i) => (
+            {/* Ghost Rows to fill empty space (only up to 5 total rows to prevent scrolling on small lists) */}
+            {Array.from({ length: Math.max(0, 5 - habits.length) }).map((_, i) => (
               <div key={`ghost-${i}`} className="flex opacity-20 pointer-events-none">
                 <div className="sticky left-0 z-20 w-56 md:w-64 shrink-0 bg-card border-r border-b border-border px-4 py-2.5 flex items-center gap-3">
                   <span className="text-[10px] font-mono text-muted-foreground w-4 text-right">{habits.length + i + 1}</span>
