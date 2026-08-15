@@ -12,6 +12,7 @@ export const useStore = create<AppState>()(
       theme: 'dark',
       viewMode: 'Monthly',
       selectedDate: format(new Date(), 'yyyy-MM-dd'),
+      strictMode: false,
       
       addHabit: (habit) => set((state) => ({
         habits: [...state.habits, { ...habit, id: crypto.randomUUID(), createdAt: format(new Date(), 'yyyy-MM-dd') }]
@@ -19,6 +20,11 @@ export const useStore = create<AppState>()(
       
       updateHabit: (id, updates) => set((state) => ({
         habits: state.habits.map((h) => h.id === id ? { ...h, ...updates } : h)
+      })),
+      
+      deleteHabit: (id) => set((state) => ({
+        habits: state.habits.filter((h) => h.id !== id),
+        entries: state.entries.filter((e) => e.habitId !== id)
       })),
       
       toggleHabitEntry: (habitId, date, mood) => set((state) => {
@@ -42,6 +48,7 @@ export const useStore = create<AppState>()(
       setTheme: (theme) => set({ theme }),
       setViewMode: (viewMode) => set({ viewMode }),
       setSelectedDate: (selectedDate) => set({ selectedDate }),
+      toggleStrictMode: () => set((state) => ({ strictMode: !state.strictMode })),
     }),
     {
       name: 'nebula-habit-tracker-storage',

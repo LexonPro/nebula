@@ -13,10 +13,10 @@ export default {
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       colors: {
-        background: '#0B0A10',
+        background: 'hsl(var(--background))',
         panel: {
-          base: '#151320',
-          elevated: '#1C1A2B',
+          base: 'hsl(var(--card))',
+          elevated: 'hsl(var(--popover))',
         },
         brand: {
           DEFAULT: '#7C3AED',

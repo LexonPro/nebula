@@ -25,12 +25,15 @@ export interface AppState {
   theme: 'dark' | 'light';
   viewMode: ViewMode;
   selectedDate: string; // ISO yyyy-MM-dd
+  strictMode: boolean;
   
   // Actions
   addHabit: (habit: Omit<Habit, 'id' | 'createdAt'>) => void;
   updateHabit: (id: string, updates: Partial<Habit>) => void;
+  deleteHabit: (id: string) => void;
   toggleHabitEntry: (habitId: string, date: string, mood?: 1|2|3|4|5) => void;
   setTheme: (theme: 'dark' | 'light') => void;
   setViewMode: (mode: ViewMode) => void;
   setSelectedDate: (date: string) => void;
+  toggleStrictMode: () => void;
 }
