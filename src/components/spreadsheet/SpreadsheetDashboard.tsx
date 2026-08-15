@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Plus } from 'lucide-react';
 import { AddHabitDialog } from '../AddHabitDialog';
 import { RightSidebar } from './RightSidebar';
+import { TopAnalytics } from './TopAnalytics';
 
 export function SpreadsheetDashboard() {
   const { habits, entries, selectedDate, toggleHabitEntry, strictMode } = useStore();
@@ -50,7 +51,9 @@ export function SpreadsheetDashboard() {
                   <p className="text-[10px] text-muted-foreground mt-2 italic relative z-10 border-t border-border pt-2">Focus, intentional, and ready for the month ahead.</p>
                 </div>
               </div>
-              <div className="flex-1 border-b border-border"></div>
+              <div className="flex-1 border-b border-border overflow-hidden bg-card/50">
+                <TopAnalytics daysInMonth={daysInMonth} />
+              </div>
             </div>
 
             {/* Grid Header Area */}
