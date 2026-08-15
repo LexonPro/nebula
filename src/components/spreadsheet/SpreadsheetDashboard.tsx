@@ -31,11 +31,11 @@ export function SpreadsheetDashboard() {
   return (
     <div className="flex h-[calc(100vh-5.5rem)] bg-background overflow-hidden text-sm w-full max-w-[1920px] mx-auto">
       {/* Main Grid Area (Left + Middle combined for sync scrolling) */}
-      <div className="flex-1 overflow-auto custom-scrollbar relative">
-        <div className="w-full min-w-max flex flex-col">
+      <div className="flex-1 overflow-x-auto overflow-y-hidden relative flex flex-col custom-scrollbar">
+        <div className="w-full min-w-max flex flex-col h-full">
 
           {/* FIXED TOP SECTION (Month, Quote, and Grid Headers) */}
-          <div className="sticky top-0 z-40 flex flex-col bg-background shadow-md">
+          <div className="z-40 flex flex-col bg-background shadow-md">
             {/* Top Area (Month & Quote) */}
             <div className="flex bg-card">
               <div className="w-56 md:w-64 shrink-0 bg-card border-r border-b border-border p-6 flex flex-col justify-between">
@@ -115,7 +115,8 @@ export function SpreadsheetDashboard() {
           </div>
 
           {/* Grid Body */}
-          <div className="flex flex-col">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar bg-background">
+            <div className="flex flex-col">
 
             {/* Habit Rows */}
             {habits.map((habit, rowIndex) => (
@@ -204,6 +205,7 @@ export function SpreadsheetDashboard() {
                 </div>
               </div>
             )}
+          </div>
           </div>
         </div>
       </div>
