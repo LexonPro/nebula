@@ -2,9 +2,10 @@ import { useStore } from './store/useStore';
 import { useEffect } from 'react';
 import { Header } from './components/Header';
 import { SpreadsheetDashboard } from './components/spreadsheet/SpreadsheetDashboard';
+import { supabase } from './lib/supabase';
 
 function App() {
-  const { theme } = useStore();
+  const { theme, setUser, fetchUserData } = useStore();
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -13,6 +14,26 @@ function App() {
        root.classList.add('dark');
     }
   }, [theme]);
+
+  useEffect(() => {
+    // Check active session on initial load
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUserData();
+      }
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUserData();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [setUser, fetchUserData]);
 
   return (
     <div className={`min-h-screen bg-background text-foreground selection:bg-brand selection:text-white flex flex-col font-sans overflow-hidden ${theme}`}>

@@ -20,6 +20,7 @@ export interface HabitEntry {
 export type ViewMode = 'Weekly' | 'Monthly' | 'Yearly';
 
 export interface AppState {
+  user: any | null; // We can use User from @supabase/supabase-js later, any for now to avoid breaking imports
   habits: Habit[];
   entries: HabitEntry[];
   theme: 'dark' | 'light';
@@ -28,6 +29,8 @@ export interface AppState {
   strictMode: boolean;
   
   // Actions
+  setUser: (user: any | null) => void;
+  fetchUserData: () => Promise<void>;
   addHabit: (habit: Omit<Habit, 'id' | 'createdAt'>) => void;
   updateHabit: (id: string, updates: Partial<Habit>) => void;
   deleteHabit: (id: string) => void;

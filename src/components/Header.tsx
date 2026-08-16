@@ -4,9 +4,12 @@ import { format, parseISO, addMonths, subMonths } from 'date-fns';
 import { toPng } from 'html-to-image';
 import { SettingsDialog } from './SettingsDialog';
 import { calculateStreak } from '../lib/streaks';
+import { AuthModal } from './auth/AuthModal';
+import { LogIn, LogOut, User } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export function Header() {
-  const { theme, setTheme, selectedDate, setSelectedDate, entries, habits } = useStore();
+  const { theme, setTheme, selectedDate, setSelectedDate, entries, habits, user } = useStore();
   const currentStreak = calculateStreak(habits, entries);
   const date = parseISO(selectedDate);
 
@@ -54,6 +57,24 @@ export function Header() {
             <Flame className="w-4 h-4" />
             <span className="font-mono font-bold text-sm">{currentStreak}</span>
           </div>
+
+          {user ? (
+            <button
+              onClick={async () => await supabase.auth.signOut()}
+              className="p-2 flex items-center gap-2 rounded-full hover:bg-destructive/10 hover:text-destructive transition-colors text-foreground text-sm font-medium group"
+              title="Sign Out"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Sign Out</span>
+            </button>
+          ) : (
+            <AuthModal>
+              <button className="p-2 flex items-center gap-2 rounded-full hover:bg-primary/10 hover:text-primary transition-colors text-foreground text-sm font-medium">
+                <LogIn className="w-4 h-4" />
+                <span className="hidden sm:inline">Sign In</span>
+              </button>
+            </AuthModal>
+          )}
 
           <button 
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
