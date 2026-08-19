@@ -5,7 +5,7 @@ import { SpreadsheetDashboard } from './components/spreadsheet/SpreadsheetDashbo
 import { supabase } from './lib/supabase';
 
 function App() {
-  const { theme, setUser, fetchUserData } = useStore();
+  const { theme, setUser, fetchUserData, clearUserData } = useStore();
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -21,6 +21,8 @@ function App() {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchUserData();
+      } else {
+        clearUserData();
       }
     });
 
@@ -29,11 +31,13 @@ function App() {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchUserData();
+      } else {
+        clearUserData();
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [setUser, fetchUserData]);
+  }, [setUser, fetchUserData, clearUserData]);
 
   return (
     <div className={`min-h-screen bg-background text-foreground selection:bg-brand selection:text-white flex flex-col font-sans overflow-hidden ${theme}`}>

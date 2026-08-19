@@ -27,9 +27,15 @@ export const useStore = create<AppState>()(
           supabase.from('entries').select('*').eq('user_id', user.id)
         ]);
         
-        if (habitsRes.data && habitsRes.data.length > 0) set({ habits: habitsRes.data });
-        if (entriesRes.data && entriesRes.data.length > 0) set({ entries: entriesRes.data });
+        if (habitsRes.error) console.error('Error fetching habits:', habitsRes.error);
+        if (entriesRes.error) console.error('Error fetching entries:', entriesRes.error);
+        
+        // Unconditionally set the data so new accounts start fresh without mock data
+        if (habitsRes.data) set({ habits: habitsRes.data });
+        if (entriesRes.data) set({ entries: entriesRes.data });
       },
+      
+      clearUserData: () => set({ habits: MOCK_HABITS, entries: MOCK_ENTRIES }),
       
       addHabit: async (habit) => {
         const newHabit = { ...habit, id: crypto.randomUUID(), createdAt: format(new Date(), 'yyyy-MM-dd') };

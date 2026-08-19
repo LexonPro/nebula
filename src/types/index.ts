@@ -31,6 +31,7 @@ export interface AppState {
   // Actions
   setUser: (user: any | null) => void;
   fetchUserData: () => Promise<void>;
+  clearUserData: () => void;
   addHabit: (habit: Omit<Habit, 'id' | 'createdAt'>) => void;
   updateHabit: (id: string, updates: Partial<Habit>) => void;
   deleteHabit: (id: string) => void;
