@@ -38,7 +38,12 @@ export function AuthModal({ children }: { children: React.ReactNode }) {
 
       if (error) throw error;
     } catch (err: any) {
-      setError(err.message || 'An error occurred during Google authentication');
+      const msg = err.message || '';
+      if (msg.toLowerCase().includes('provider is not enabled') || msg.toLowerCase().includes('unsupported provider')) {
+        setError('Google sign-in is not enabled yet in your Supabase project. Enable it under Supabase Dashboard > Authentication > Providers > Google.');
+      } else {
+        setError(msg || 'An error occurred during Google authentication');
+      }
       setGoogleLoading(false);
     }
   };
