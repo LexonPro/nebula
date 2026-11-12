@@ -1,5 +1,5 @@
 import { useStore } from '../../store/useStore';
-import { format, getDaysInMonth, startOfMonth, addDays, getWeekOfMonth, isSameDay, parseISO, isAfter, startOfDay } from 'date-fns';
+import { format, getDaysInMonth, startOfMonth, addDays, subDays, getWeekOfMonth, isSameDay, parseISO, isAfter, startOfDay } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Plus } from 'lucide-react';
 import { AddHabitDialog } from '../AddHabitDialog';
@@ -232,11 +232,4 @@ export function SpreadsheetDashboard() {
       </div>
     </div>
   );
-}
-
-// Helper to get subDays (since it wasn't imported at top to avoid clutter)
-function subDays(date: Date, amount: number): Date {
-  const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() - amount);
-  return newDate;
 }

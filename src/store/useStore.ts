@@ -55,7 +55,7 @@ export const useStore = create<AppState>()(
             const idMap = new Map<string, string>();
             const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
             
-            const migratedHabits = localHabits.map((h) => {
+            const migratedHabits: Habit[] = localHabits.map((h) => {
               const targetId = uuidRegex.test(h.id) ? h.id : crypto.randomUUID();
               idMap.set(h.id, targetId);
               return {
@@ -67,24 +67,34 @@ export const useStore = create<AppState>()(
                 weeklyGoalDays: h.weeklyGoalDays,
                 createdAt: h.createdAt || format(new Date(), 'yyyy-MM-dd'),
                 archived: h.archived || false,
-                reminderTime: h.reminderTime || null,
-                user_id: user.id,
+                reminderTime: h.reminderTime || undefined,
               };
             });
             
-            const migratedEntries = localEntries
+            const migratedEntries: HabitEntry[] = localEntries
               .filter(e => idMap.has(e.habitId))
               .map(e => ({
                 habitId: idMap.get(e.habitId)!,
                 date: e.date,
                 completed: e.completed,
-                mood: e.mood || null,
-                user_id: user.id,
+                mood: e.mood,
               }));
               
+            const habitsPayload = migratedHabits.map(h => ({
+              ...h,
+              user_id: user.id,
+              reminderTime: h.reminderTime || null,
+            }));
+
+            const entriesPayload = migratedEntries.map(e => ({
+              ...e,
+              user_id: user.id,
+              mood: e.mood || null,
+            }));
+
             await Promise.all([
-              supabase.from('habits').insert(migratedHabits),
-              migratedEntries.length > 0 ? supabase.from('entries').insert(migratedEntries) : Promise.resolve(),
+              supabase.from('habits').insert(habitsPayload),
+              entriesPayload.length > 0 ? supabase.from('entries').insert(entriesPayload) : Promise.resolve(),
             ]);
             
             set({ habits: migratedHabits, entries: migratedEntries });

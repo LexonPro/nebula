@@ -32,10 +32,10 @@ export interface AppState {
   setUser: (user: any | null) => void;
   fetchUserData: () => Promise<void>;
   clearUserData: () => void;
-  addHabit: (habit: Omit<Habit, 'id' | 'createdAt'>) => void;
-  updateHabit: (id: string, updates: Partial<Habit>) => void;
-  deleteHabit: (id: string) => void;
-  toggleHabitEntry: (habitId: string, date: string, mood?: 1|2|3|4|5) => void;
+  addHabit: (habit: Omit<Habit, 'id' | 'createdAt'>) => void | Promise<void>;
+  updateHabit: (id: string, updates: Partial<Habit>) => void | Promise<void>;
+  deleteHabit: (id: string) => void | Promise<void>;
+  toggleHabitEntry: (habitId: string, date: string, mood?: 1|2|3|4|5) => void | Promise<void>;
   setTheme: (theme: 'dark' | 'light') => void;
   setViewMode: (mode: ViewMode) => void;
   setSelectedDate: (date: string) => void;
