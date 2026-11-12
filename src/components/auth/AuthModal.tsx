@@ -44,7 +44,12 @@ export function AuthModal({ children }: { children: React.ReactNode }) {
         }
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred during authentication');
+      const msg = err.message || '';
+      if (msg.toLowerCase().includes('invalid login credentials')) {
+        setError('Invalid email or password. If you haven’t created an account yet, click "Create Account" above.');
+      } else {
+        setError(msg || 'An error occurred during authentication');
+      }
     } finally {
       setLoading(false);
     }
@@ -61,11 +66,45 @@ export function AuthModal({ children }: { children: React.ReactNode }) {
             {isLogin ? 'Welcome Back' : 'Create Account'}
           </DialogTitle>
           <p className="text-xs text-muted-foreground text-center mt-1">
-            {isLogin ? 'Sign in to sync your habits across devices' : 'Get started tracking and building consistency'}
+            {isLogin ? 'Sign in to sync your habits across devices' : 'Create an account to backup and sync your habits'}
           </p>
         </DialogHeader>
 
         <div className="p-6 pt-2 space-y-4">
+          {/* Segmented Tab Switcher */}
+          <div className="flex bg-muted/60 p-1 rounded-lg border border-border">
+            <button
+              type="button"
+              onClick={() => {
+                setIsLogin(true);
+                setError(null);
+                setSuccessMessage(null);
+              }}
+              className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                isLogin
+                  ? 'bg-card text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsLogin(false);
+                setError(null);
+                setSuccessMessage(null);
+              }}
+              className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                !isLogin
+                  ? 'bg-card text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Create Account
+            </button>
+          </div>
+
           {!isSupabaseConfigured && (
             <div className="p-3 text-xs text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-start gap-2">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
@@ -123,20 +162,11 @@ export function AuthModal({ children }: { children: React.ReactNode }) {
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (isLogin ? 'Sign In' : 'Create Account')}
             </button>
 
-            <p className="text-center text-xs text-muted-foreground pt-2">
-              {isLogin ? "Don't have an account? " : "Already have an account? "}
-              <button
-                type="button"
-                onClick={() => {
-                  setIsLogin(!isLogin);
-                  setError(null);
-                  setSuccessMessage(null);
-                }}
-                className="text-primary hover:underline font-medium ml-1 cursor-pointer"
-              >
-                {isLogin ? 'Sign Up' : 'Sign In'}
-              </button>
-            </p>
+            <div className="text-center pt-3 border-t border-border/60">
+              <p className="text-[11px] text-muted-foreground">
+                ✨ Your habits are already saved locally in this browser.
+              </p>
+            </div>
           </form>
         </div>
       </DialogContent>
