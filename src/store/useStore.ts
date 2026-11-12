@@ -199,7 +199,13 @@ export const useStore = create<AppState>()(
     }),
     {
       name: 'nebula-habit-tracker-storage',
-      version: 1,
+      version: 2,
+      partialize: (state) => ({
+        habits: state.habits,
+        entries: state.entries,
+        theme: state.theme,
+        strictMode: state.strictMode,
+      }),
     }
   )
 );

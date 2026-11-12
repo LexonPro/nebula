@@ -69,9 +69,12 @@ export function Header() {
             </button>
           ) : (
             <AuthModal>
-              <button className="p-2 flex items-center gap-2 rounded-full hover:bg-primary/10 hover:text-primary transition-colors text-foreground text-sm font-medium">
+              <button 
+                className="p-2 flex items-center gap-2 rounded-full hover:bg-primary/10 hover:text-primary transition-colors text-foreground text-sm font-medium"
+                title="Optional: Sign in to sync across devices. Habits already save locally!"
+              >
                 <LogIn className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign In</span>
+                <span className="hidden sm:inline">Sync Account</span>
               </button>
             </AuthModal>
           )}
