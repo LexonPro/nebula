@@ -1,43 +1,69 @@
 import { Habit, HabitEntry } from '../types';
-import { format, subDays, parseISO } from 'date-fns';
+import { format, subDays } from 'date-fns';
 
 export function calculateStreak(habits: Habit[], entries: HabitEntry[]): number {
   if (habits.length === 0) return 0;
 
-  // Create a fast lookup for entries per date
-  const entriesByDate: Record<string, number> = {};
+  // Pre-index completed entries by "habitId:date" for O(1) lookups
+  const completedLookup = new Set<string>();
   entries.forEach(e => {
     if (e.completed) {
-      entriesByDate[e.date] = (entriesByDate[e.date] || 0) + 1;
+      completedLookup.add(`${e.habitId}:${e.date}`);
     }
   });
 
-  const totalHabits = habits.length;
-  let streak = 0;
-  let currentDate = new Date(); // Start with today
+  const isDayComplete = (dateStr: string): boolean => {
+    // Only habits created on or before this date (and not archived) count
+    const activeHabits = habits.filter(
+      h => (!h.createdAt || h.createdAt <= dateStr) && !h.archived
+    );
 
-  // Check today first
-  const todayStr = format(currentDate, 'yyyy-MM-dd');
-  const todayCompleted = entriesByDate[todayStr] || 0;
-  
-  if (todayCompleted === totalHabits) {
+    if (activeHabits.length === 0) return false;
+
+    // Check if every active habit has a completed entry on this date
+    return activeHabits.every(h => completedLookup.has(`${h.id}:${dateStr}`));
+  };
+
+  let streak = 0;
+  let checkDate = new Date(); // Start with today
+
+  const todayStr = format(checkDate, 'yyyy-MM-dd');
+  const todayCompleted = isDayComplete(todayStr);
+
+  if (todayCompleted) {
     streak++;
   }
 
-  // Move to yesterday and start loop
-  currentDate = subDays(currentDate, 1);
+  // Check backwards starting from yesterday
+  checkDate = subDays(checkDate, 1);
 
-  while (true) {
-    const dateStr = format(currentDate, 'yyyy-MM-dd');
-    const completedCount = entriesByDate[dateStr] || 0;
+  // Maximum lookback guard (e.g. 5 years = 1825 days) to prevent infinite loops
+  const maxDays = 1825;
+  let daysChecked = 0;
 
-    if (completedCount === totalHabits) {
+  while (daysChecked < maxDays) {
+    const dateStr = format(checkDate, 'yyyy-MM-dd');
+    
+    // Check if there were any active habits on this historical date
+    const hadActiveHabits = habits.some(
+      h => (!h.createdAt || h.createdAt <= dateStr) && !h.archived
+    );
+
+    // If we've reached a date before any habits were created, stop counting
+    if (!hadActiveHabits) {
+      break;
+    }
+
+    if (isDayComplete(dateStr)) {
       streak++;
-      currentDate = subDays(currentDate, 1);
+      checkDate = subDays(checkDate, 1);
+      daysChecked++;
     } else {
-      break; // Streak broken
+      // Streak is broken
+      break;
     }
   }
 
   return streak;
 }
+
