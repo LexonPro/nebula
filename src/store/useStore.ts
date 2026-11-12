@@ -88,16 +88,13 @@ export const useStore = create<AppState>()(
             ]);
             
             set({ habits: migratedHabits, entries: migratedEntries });
-          } else {
-            // Fresh account with default mock data - start with fresh canvas
-            set({ habits: [], entries: [] });
           }
         } catch (err) {
           console.error('Error fetching/migrating user data:', err);
         }
       },
       
-      clearUserData: () => set({ habits: MOCK_HABITS, entries: MOCK_ENTRIES }),
+      clearUserData: () => set({ user: null }),
       
       addHabit: async (habit) => {
         const newHabit = { ...habit, id: crypto.randomUUID(), createdAt: format(new Date(), 'yyyy-MM-dd') };

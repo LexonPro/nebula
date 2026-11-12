@@ -5,7 +5,7 @@ import { SpreadsheetDashboard } from './components/spreadsheet/SpreadsheetDashbo
 import { supabase } from './lib/supabase';
 
 function App() {
-  const { theme, setUser, fetchUserData, clearUserData } = useStore();
+  const { theme, setUser, fetchUserData } = useStore();
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -21,23 +21,20 @@ function App() {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchUserData();
-      } else {
-        clearUserData();
       }
+      // Never clear local data when unauthenticated; let localStorage persist!
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchUserData();
-      } else {
-        clearUserData();
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [setUser, fetchUserData, clearUserData]);
+  }, [setUser, fetchUserData]);
 
   return (
     <div className={`min-h-screen bg-background text-foreground selection:bg-brand selection:text-white flex flex-col font-sans overflow-hidden ${theme}`}>
